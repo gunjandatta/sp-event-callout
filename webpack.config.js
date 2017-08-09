@@ -8,7 +8,7 @@ module.exports = {
     // Entry point(s)
     entry: {
         // JS
-        javascript: ["babel-polyfill", "./index.ts"]
+        javascript: ["./index.ts"]
     },
 
     // Output

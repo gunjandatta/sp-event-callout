@@ -1,10 +1,10 @@
-import {List, Types} from "gd-sprest";
+import { List, Types } from "gd-sprest";
 
-declare var CalloutManager:any;
-declare var CalloutOptions:any;
-declare var Promise:PromiseConstructorLike;
-declare var SP:any;
-declare var ExecuteOrDelayUntilScriptLoaded:any;
+declare var CalloutManager: any;
+declare var CalloutOptions: any;
+declare var Promise: PromiseConstructorLike;
+declare var SP: any;
+declare var ExecuteOrDelayUntilScriptLoaded: any;
 
 /**
  * SharePoint Calendar Event Callout Class
@@ -25,7 +25,7 @@ class SPEventCallout {
 
                 // Overload the onItemsSucceed event
                 this._onItemsSucceed = SP.UI.ApplicationPages.CalendarStateHandler.prototype.onItemsSucceed;
-                SP.UI.ApplicationPages.CalendarStateHandler.prototype.onItemsSucceed = function($p0, $p1) {
+                SP.UI.ApplicationPages.CalendarStateHandler.prototype.onItemsSucceed = function ($p0, $p1) {
                     // Call the base
                     _this_._onItemsSucceed.call(this, $p0, $p1);
 
@@ -44,16 +44,16 @@ class SPEventCallout {
      */
 
     // The callouts
-    private _callouts:Array<any> = [];
+    private _callouts: Array<any> = [];
 
     // The current item being displayed
-    private _currentItemId:number = 0;
+    private _currentItemId: number = 0;
 
     // The fields to display in the callout
-    private _fields:Array<string> = ["Category", "EventDate", "EndDate", "Location", "Description"];
+    private _fields: Array<string> = ["Category", "EventDate", "EndDate", "Location", "Description"];
 
     // The item Information
-    private _items:Array<Types.IListItem> = [];
+    private _items: Array<Types.IListItem> = [];
 
     // The original onItemsSucceed event
     private _onItemsSucceed = null;
@@ -72,7 +72,9 @@ class SPEventCallout {
 
         // Parse the calendar events
         let calEvents = <any>document.querySelectorAll(".ms-acal-item");
-        for(let calEvent of calEvents) {
+        for (let i = 0; i < calEvents.length; i++) {
+            let calEvent = calEvents[i];
+
             // Add hover events
             calEvent.addEventListener("mouseover", this.hoverOverEvent);
             calEvent.addEventListener("mouseout", this.hoverOutEvent);
@@ -101,7 +103,7 @@ class SPEventCallout {
         // Return a promise
         return new Promise((resolve, reject) => {
             // See if we already queried for this item
-            if(this._items[itemId]) {
+            if (this._items[itemId]) {
                 // Resolve the request
                 resolve(this._items[itemId]);
             } else {
@@ -125,7 +127,7 @@ class SPEventCallout {
     private hoverOutEvent = () => {
         // Get the callout
         let callout = this._callouts[this._currentItemId];
-        if(callout) {
+        if (callout) {
             // Close the callout w/ animation
             callout.close(true);
         }
@@ -139,7 +141,7 @@ class SPEventCallout {
         // Get the item id for this event
         let link = ev.currentTarget.querySelector("a");
         let itemId = link ? link.href.substr(link.href.indexOf("ID=") + 3) : 0;
-        if(itemId > 0 && itemId != this._currentItemId) {
+        if (itemId > 0 && itemId != this._currentItemId) {
             // Set the current item id
             this._currentItemId = itemId;
 
@@ -154,12 +156,13 @@ class SPEventCallout {
                 let elContent = callout.getContentElement().querySelector(".js-callout-body");
 
                 // Parse the fields to display
-                for(let field of this._fields) {
+                for (let i = 0; i < this._fields.length; i++) {
+                    let field = this._fields[i];
                     let title = field;
                     let value = item[field];
 
                     // See if this is a date/time field
-                    if(field == "EndDate" || field == "EventDate") {
+                    if (field == "EndDate" || field == "EventDate") {
                         // Convert the date field
                         value = (new Date(value)).toString();
 
