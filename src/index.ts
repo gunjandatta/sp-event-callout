@@ -17,8 +17,8 @@ class SPEventCallout {
         // Save the list name
         this._listName = listName;
 
-        // Ensure the callout library is loaded
-        SP.SOD.executeFunc("callout.js", "Callout", () => {
+        // Ensure the SP library is loaded
+        SP.SOD.loadMultiple(["callout.js", "sp.ui.dialog.js"], () => {
             // Wait for the calendar script to be loaded
             ExecuteOrDelayUntilScriptLoaded(() => {
                 let _this_ = this;
@@ -75,26 +75,34 @@ class SPEventCallout {
         for (let i = 0; i < calEvents.length; i++) {
             let calEvent = calEvents[i];
 
-            // Add hover events
-            calEvent.addEventListener("mouseover", this.hoverOverEvent);
-            calEvent.addEventListener("mouseout", this.hoverOutEvent);
-
             // Get the item id for this event
             let link = calEvent.querySelector("a");
             let itemId = link ? link.href.substr(link.href.indexOf("ID=") + 3) : 0;
+            if (itemId > 0) {
+                // Remove the default hover text
+                calEvent.removeAttribute("title");
 
-            // Create the callout options
-            let calloutOptions = new CalloutOptions();
-            calloutOptions.content = "<div>Loading the Event Information...</div>";
-            calloutOptions.ID = itemId;
-            calloutOptions.launchPoint = calEvent;
-            calloutOptions.title = calEvent.title;
+                // Get the callout
+                let callout = CalloutManager.getFromLaunchPointIfExists(calEvent) as HTMLDivElement;
+                if (callout == null) {
+                    // Create the callout
+                    callout = CalloutManager.createNewIfNecessary({
+                        beakOrientation: "leftRight",
+                        content: "<div>Loading the Event Information...</div>",
+                        ID: i + "_" + itemId,
+                        launchPoint: calEvent,
+                        openOptions: { event: "hover", showCloseButton: true },
+                        title: calEvent.title,
+                        onOpeningCallback: (callout) => {
+                            // Get the item id
+                            let itemId = callout.getID().split("_")[1];
 
-            // Remove the default hover text
-            calEvent.removeAttribute("title");
-
-            // Create the callout
-            this._callouts[itemId] = CalloutManager.createNew(calloutOptions);
+                            // Render the item
+                            this.renderCalloutContent(callout, itemId);
+                        }
+                    });
+                }
+            }
         }
     }
 
@@ -123,64 +131,37 @@ class SPEventCallout {
         });
     }
 
-    // The hover out event
-    private hoverOutEvent = () => {
-        // Get the callout
-        let callout = this._callouts[this._currentItemId];
-        if (callout) {
-            // Close the callout w/ animation
-            callout.close(true);
-        }
+    // Method to render the callout content
+    renderCalloutContent = (callout, itemId) => {
+        // Get the item
+        this.getItemInfo(itemId).then((item) => {
+            let content = "";
 
-        // Clear the current item id
-        this._currentItemId = 0;
-    }
+            // Get the content element
+            let elContent = callout.getContentElement().querySelector(".js-callout-body");
 
-    // The hover over event
-    private hoverOverEvent = (ev) => {
-        // Get the item id for this event
-        let link = ev.currentTarget.querySelector("a");
-        let itemId = link ? link.href.substr(link.href.indexOf("ID=") + 3) : 0;
-        if (itemId > 0 && itemId != this._currentItemId) {
-            // Set the current item id
-            this._currentItemId = itemId;
+            // Parse the fields to display
+            for (let i = 0; i < this._fields.length; i++) {
+                let field = this._fields[i];
+                let title = field;
+                let value = item[field];
 
-            // Get the callout
-            let callout = this._callouts[this._currentItemId];
+                // See if this is a date/time field
+                if (field == "EndDate" || field == "EventDate") {
+                    // Convert the date field
+                    value = (new Date(value)).toString();
 
-            // Get the item
-            this.getItemInfo(this._currentItemId).then((item) => {
-                let content = "";
-
-                // Get the content element
-                let elContent = callout.getContentElement().querySelector(".js-callout-body");
-
-                // Parse the fields to display
-                for (let i = 0; i < this._fields.length; i++) {
-                    let field = this._fields[i];
-                    let title = field;
-                    let value = item[field];
-
-                    // See if this is a date/time field
-                    if (field == "EndDate" || field == "EventDate") {
-                        // Convert the date field
-                        value = (new Date(value)).toString();
-
-                        // Set the title
-                        title = field == "EndDate" ? "End Date" : "Start Date";
-                    }
-
-                    // Update the content
-                    content += "<div><strong>" + title + ": </strong>" + value + "</div>";
+                    // Set the title
+                    title = field == "EndDate" ? "End Date" : "Start Date";
                 }
 
-                // Update the content element
-                elContent.innerHTML = content;
-            });
+                // Update the content
+                content += "<div><strong>" + title + ": </strong>" + value + "</div>";
+            }
 
-            // Open the callout
-            callout.open();
-        }
+            // Update the content element
+            elContent.innerHTML = content;
+        });
     }
 };
 
