@@ -1,3 +1,4 @@
+import "core-js/es6/promise";
 import { List, Types } from "gd-sprest";
 
 declare var CalloutManager: any;
