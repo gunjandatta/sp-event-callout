@@ -6,7 +6,7 @@ Upload the script file to a SharePoint library. Edit a Calendar view page, and a
 ```
 <script type="text/javascript" src="[url to the script file]"></script>
 <script type="text/javascript">
-    new SPEventCallout(["Calendar List Name"]);
+    new SPEventCallout("Calendar List Name", ["Title", "Category", "EventDate", "EndDate"]);
 </script>
 ```
 
