@@ -14,9 +14,10 @@ class SPEventCallout {
     /**
      * Constructor
      */
-    constructor(listName) {
-        // Save the list name
+    constructor(listName, fields) {
+        // Save the list name and fields
         this._listName = listName;
+        this._fields = fields || ["Title", "Category", "EventDate", "EndDate", "Location", "Description"];
 
         // Ensure the SP library is loaded
         SP.SOD.loadMultiple(["callout.js", "sp.ui.dialog.js"], () => {
@@ -51,7 +52,7 @@ class SPEventCallout {
     private _currentItemId: number = 0;
 
     // The fields to display in the callout
-    private _fields: Array<string> = ["Category", "EventDate", "EndDate", "Location", "Description"];
+    private _fields: Array<string> = [];
 
     // The item Information
     private _items: Array<Types.IListItem> = [];

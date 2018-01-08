@@ -9,7 +9,7 @@ var SPEventCallout = /** @class */ (function () {
     /**
      * Constructor
      */
-    function SPEventCallout(listName) {
+    function SPEventCallout(listName, fields) {
         var _this = this;
         /**
          * Global Variables
@@ -19,7 +19,7 @@ var SPEventCallout = /** @class */ (function () {
         // The current item being displayed
         this._currentItemId = 0;
         // The fields to display in the callout
-        this._fields = ["Category", "EventDate", "EndDate", "Location", "Description"];
+        this._fields = [];
         // The item Information
         this._items = [];
         // The original onItemsSucceed event
@@ -52,8 +52,9 @@ var SPEventCallout = /** @class */ (function () {
                 elContent.innerHTML = content;
             });
         };
-        // Save the list name
+        // Save the list name and fields
         this._listName = listName;
+        this._fields = fields || ["Title", "Category", "EventDate", "EndDate", "Location", "Description"];
         // Ensure the SP library is loaded
         SP.SOD.loadMultiple(["callout.js", "sp.ui.dialog.js"], function () {
             // Wait for the calendar script to be loaded
