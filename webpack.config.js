@@ -8,7 +8,7 @@ module.exports = {
     // Entry point(s)
     entry: {
         // JS
-        javascript: ["./index.ts"]
+        javascript: ["./sp-event-callout.ts"]
     },
 
     // Output
@@ -24,15 +24,22 @@ module.exports = {
         // Loaders
         loaders: [
             {
+                // Target .js files
+                test: /\.js$/,
+                // Use the "babel-loader" library
+                loader: "babel-loader",
+                // Compile to ES2015 standards
+                query: {
+                    presets: ["es2015"]
+                }
+            },
+            {
                 // Target .ts files
                 test: /\.ts$/,
                 // Use the "ts-loader" library
                 loader: "ts-loader",
                 // Exclude the npm libraries
-                exclude: /node_modules/,
-                query: {
-                    presets: ["es2015"]
-                }
+                exclude: /node_modules/
             }
         ]
     }
