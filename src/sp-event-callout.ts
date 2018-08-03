@@ -55,7 +55,7 @@ class SPEventCallout {
     private _fields: Array<string> = [];
 
     // The item Information
-    private _items: Array<Types.IListItem> = [];
+    private _items: Array<Types.SP.IListItem> = [];
 
     // The original onItemsSucceed event
     private _onItemsSucceed = null;
@@ -118,7 +118,7 @@ class SPEventCallout {
                 resolve(this._items[itemId]);
             } else {
                 // Get the list
-                (new List(this._listName))
+                List(this._listName)
                     // Get the item
                     .Items(itemId)
                     // Execute the request

@@ -13,35 +13,36 @@ module.exports = {
 
     // Output
     output: {
-        // Filename
-        filename: "sp-event-callout.js",
         // Folder
-        path: path.join(__dirname, "dist")
+        path: path.join(__dirname, "dist"),
+        // Filename
+        filename: "sp-event-callout.js"
     },
 
     // Module
     module: {
-        // Loaders
-        loaders: [
+        // Rules
+        rules: [
+            // TypeScript Compiler
             {
-                // Target .js files
-                test: /\.js$/,
-                // Use the "babel-loader" library
-                loader: "babel-loader",
-                // Compile to ES2015 standards
-                query: {
-                    presets: ["es2015"]
-                }
-            },
-            {
-                // Target .ts files
-                test: /\.ts$/,
-                // Use the "ts-loader" library
-                loader: "ts-loader",
-                // Exclude the npm libraries
-                exclude: /node_modules/
+                // Target .ts(x) files
+                test: /\.tsx?$/,
+                // Exclude the node_modules folder
+                exclude: /node_modules/,
+                // Loaders - Runs bottom up
+                use: [
+                    // JS (ES5) -> JS (Current)
+                    {
+                        loader: "babel-loader",
+                        options: { presets: ["env"] }
+                    },
+                    // TypeScript -> JS (ES5)
+                    {
+                        loader: "ts-loader"
+                    }
+                ]
             }
         ]
     }
-          
+
 }
