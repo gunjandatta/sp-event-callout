@@ -4,7 +4,7 @@
   "description": "Adds a callout to events displayed in a SharePoint calendar.",
   "main": "index.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack --mode production"
   },
   "repository": {
     "type": "git",
@@ -18,15 +18,14 @@
   },
   "homepage": "https://github.com/gunjandatta/sp-event-callout#readme",
   "dependencies": {
-    "babel-preset-env": "^1.7.0",
-    "gd-sprest": "^4.1.7"
+    "gd-sprest": "^4.6.8"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
-    "core-js": "^2.5.7",
-    "ts-loader": "^4.4.2",
-    "webpack": "^4.16.4",
-    "webpack-cli": "^3.1.0"
+    "@babel/core": "^7.3.3",
+    "@babel/preset-env": "^7.3.1",
+    "babel-loader": "^8.0.5",
+    "ts-loader": "^5.3.3",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3"
   }
 }

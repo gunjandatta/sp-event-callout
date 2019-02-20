@@ -1,8 +1,6 @@
-import "core-js/es6/promise";
 import { List, Types } from "gd-sprest";
 
 declare var CalloutManager: any;
-declare var CalloutOptions: any;
 declare var Promise: PromiseConstructorLike;
 declare var SP: any;
 declare var ExecuteOrDelayUntilScriptLoaded: any;
@@ -45,17 +43,11 @@ class SPEventCallout {
      * Global Variables
      */
 
-    // The callouts
-    private _callouts: Array<any> = [];
-
-    // The current item being displayed
-    private _currentItemId: number = 0;
-
     // The fields to display in the callout
     private _fields: Array<string> = [];
 
     // The item Information
-    private _items: Array<Types.SP.IListItem> = [];
+    private _items: Array<Types.SP.ListItem> = [];
 
     // The original onItemsSucceed event
     private _onItemsSucceed = null;
@@ -69,9 +61,6 @@ class SPEventCallout {
 
     // Method to attach callouts to the events
     private attachCalloutsToEvents() {
-        // Clear the callouts
-        this._callouts = [];
-
         // Parse the calendar events
         let calEvents = <any>document.querySelectorAll(".ms-acal-item");
         for (let i = 0; i < calEvents.length; i++) {

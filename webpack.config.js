@@ -1,5 +1,4 @@
 var path = require("path");
-var webpack = require("webpack");
 
 module.exports = {
     // Root folder of source code
@@ -34,7 +33,7 @@ module.exports = {
                     // JS (ES5) -> JS (Current)
                     {
                         loader: "babel-loader",
-                        options: { presets: ["env"] }
+                        options: { presets: ["@babel/preset-env"] }
                     },
                     // TypeScript -> JS (ES5)
                     {
